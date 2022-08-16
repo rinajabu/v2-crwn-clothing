@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { UserContext } from '../../contexts/user.context'
 import { 
     createAuthUserWithEmailAndPassword, 
     createUserDocumentFromAuth, 
@@ -19,6 +20,8 @@ const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields)
     const { email, password } = formFields
 
+    const { currentUser, setCurrentUser } = useContext(UserContext)
+
     const signInWithGoogle = async () => {
         // const response = await signInWithGooglePopup()
         // can destructure user from 'response' object
@@ -33,8 +36,8 @@ const SignInForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await signInAuthUserWithEmailAndPassword(email, password)
-            console.log(response);
+            const { user } = await signInAuthUserWithEmailAndPassword(email, password);
+            setCurrentUser(user)
             resetFormFields();
         } catch (error) {
             switch (error.code) {
